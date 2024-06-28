@@ -1,0 +1,66 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ScholarshipEligibilityChecker 
+{
+    uint256 public CGPA = 80; // Representing 8.0 as 80
+    address public owner;
+
+    // Event to modify old CGPA by current CGPA
+    event CGPAChanged(uint256 currentCGPA);
+
+    // Modifier to restrict access to the owner
+    modifier onlyOwner() 
+    {
+        require(msg.sender == owner, "Caller is not the owner");
+        _;
+    }
+
+    constructor() 
+    {
+        // Set the contract deployer as the owner
+        owner = msg.sender;
+    }
+
+    // Function to check eligibility for Full Scholarship
+    function checkforFullScholarship(uint256 currentCGPA) external onlyOwner 
+    {
+        require(currentCGPA >= 95, "You are not eligible for a full scholarship."); // 9.5 represented as 95
+
+        CGPA = currentCGPA;
+        emit CGPAChanged(currentCGPA);
+    }
+
+    // Function to check eligibility for Half Scholarship
+    function checkforHalfScholarship(uint256 currentCGPA) external onlyOwner 
+    {
+        require(currentCGPA >= 85, "You are not eligible for a half scholarship."); // 8.5 represented as 85
+
+        CGPA = currentCGPA;
+        emit CGPAChanged(currentCGPA);
+    }
+
+    // Function to check eligibility for Quarter Scholarship
+    function checkforQuarterScholarship(uint256 currentCGPA) external onlyOwner
+    {
+        require(currentCGPA >= 75, "You are not eligible for a quarter scholarship."); // 7.5 represented as 75
+
+        CGPA = currentCGPA;
+        emit CGPAChanged(currentCGPA);
+    }
+
+    // Function that uses assert statement for getting minimum CGPA
+    function checkMinimumCGPA() external view 
+    {
+        assert(CGPA >= 40); // This should always be true, 4.0 represented as 40
+    }
+
+    // Function to demonstrate revert statement to check eligibility for any scholarship
+    function checkforAnyScholarship(uint256 currentCGPA) external onlyOwner {
+        if (currentCGPA < 50) { // 5.0 represented as 50
+            revert("You do not have the minimum CGPA for any scholarship.");
+        }
+        CGPA = currentCGPA;
+        emit CGPAChanged(currentCGPA);
+    }
+}
